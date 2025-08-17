@@ -1,52 +1,33 @@
 {
   "manifest_version": 3,
   "name": "IA Prompt Bar",
-  "version": "1.0.0",
-  "description": "Extensão Chrome que abre uma barra lateral para salvar e injetar prompts automaticamente em interfaces de chat de IA.",
+  "description": "Barra lateral para salvar e injetar prompts em chats de IA.",
+  "version": "1.0",
   "permissions": [
     "storage",
-    "activeTab",
-    "scripting"
-  ],
-  "host_permissions": [
-    "https://chatgpt.com/*",
-    "https://claude.ai/*",
-    "https://bard.google.com/*",
-    "https://poe.com/*",
-    "https://character.ai/*",
-    "https://chat.openai.com/*"
-  ],
-  "content_scripts": [
-    {
-      "matches": [
-        "https://chatgpt.com/*",
-        "https://claude.ai/*",
-        "https://bard.google.com/*",
-        "https://poe.com/*",
-        "https://character.ai/*",
-        "https://chat.openai.com/*"
-      ],
-      "js": ["content.js"],
-      "css": ["popup.css"]
-    }
+    "scripting",
+    "activeTab"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "IA Prompt Bar",
     "default_icon": {
-      "16": "icons/icon16.png",
-      "32": "icons/icon32.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
     }
   },
-  "icons": {
-    "16": "icons/icon16.png",
-    "32": "icons/icon32.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  }
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chat.openai.com/*",
+        "https://claude.ai/*",
+        "https://bard.google.com/*",
+        "https://gemini.google.com/*"
+      ],
+      "js": ["content.js"]
+    }
+  ]
 }
