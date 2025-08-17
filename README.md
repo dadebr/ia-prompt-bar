@@ -5,18 +5,28 @@ Extensão Chrome que abre uma barra lateral para salvar e injetar prompts automa
 ## Descrição
 
 A IA Prompt Bar é uma extensão para Google Chrome que permite aos usuários:
+
 - Salvar prompts frequentemente utilizados
 - Injetar prompts rapidamente em interfaces de chat de IA
 - Organizar prompts em categorias
 - Acessar prompts através de uma barra lateral conveniente
+- Editar prompts existentes inline
+- Buscar e filtrar prompts por título
+- Exportar e importar prompts em formato JSON
+- Alternar entre tema claro e escuro
 
 ## Recursos
 
 - 🚀 Injeção rápida de prompts
 - 📁 Organização por categorias
 - 🔍 Busca rápida de prompts
+- ✏️ Edição inline de prompts
+- 📊 Ordenação por data/título
+- 💾 Exportar/importar JSON
+- 🌙 Tema escuro/claro
 - 💾 Salvamento local dos dados
 - 🎨 Interface intuitiva e responsiva
+- 🤖 Suporte a ChatGPT, Gemini, Claude e outros
 
 ## Instalação
 
@@ -34,26 +44,36 @@ A IA Prompt Bar é uma extensão para Google Chrome que permite aos usuários:
 ## Como Usar
 
 ### Adicionando Prompts
+
 1. Clique no ícone da extensão na barra de ferramentas do Chrome
-2. Clique em "Adicionar Prompt"
-3. Insira o título e o conteúdo do prompt
-4. Escolha uma categoria (opcional)
-5. Clique em "Salvar"
+2. Digite o título e o conteúdo do prompt
+3. Clique em "Salvar Prompt"
 
 ### Usando Prompts
+
 1. Abra qualquer interface de chat de IA (ChatGPT, Claude, etc.)
 2. Clique no ícone da extensão para abrir a barra lateral
 3. Navegue pelos prompts salvos ou use a busca
-4. Clique no prompt desejado para injetá-lo no campo de texto
+4. Clique em "Injetar" para inserir o prompt no campo de texto
+
+### Editando Prompts
+
+1. Clique no botão "Editar" em qualquer prompt
+2. Modifique o título ou conteúdo
+3. Clique em "Atualizar" para salvar as mudanças
+4. Use "Cancelar" para descartar as alterações
 
 ### Organizando Prompts
-- Use categorias para organizar seus prompts por tema
-- Utilize a função de busca para encontrar rapidamente prompts específicos
-- Edite ou exclua prompts conforme necessário
+
+- Use a busca para encontrar rapidamente prompts específicos
+- Ordene por "Mais recentes" ou "Título A-Z"
+- Exporte seus prompts para backup
+- Importe prompts de outros usuários ou backups
 
 ## Desenvolvimento
 
 ### Estrutura do Projeto
+
 ```
 ia-prompt-bar/
 ├── manifest.json          # Manifesto da extensão
@@ -61,15 +81,35 @@ ia-prompt-bar/
 ├── popup.js               # Lógica da popup
 ├── content.js             # Script de conteúdo
 ├── background.js          # Script de background
+├── deploy.sh              # Script de deploy
 └── styles/
     └── popup.css          # Estilos da interface
 ```
 
 ### Tecnologias Utilizadas
+
 - HTML5
 - CSS3
 - JavaScript (ES6+)
 - Chrome Extension APIs
+
+## Deploy
+
+Para fazer deploy das mudanças:
+
+```bash
+# Dar permissão de execução ao script
+chmod +x deploy.sh
+
+# Executar o deploy
+./deploy.sh
+```
+
+O script irá:
+- Verificar se o Git está configurado
+- Adicionar todos os arquivos modificados
+- Fazer commit com mensagem descritiva
+- Fazer push para o repositório GitHub
 
 ## Contribuição
 
@@ -81,7 +121,7 @@ ia-prompt-bar/
 
 ## Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
 
 ## Contato
 

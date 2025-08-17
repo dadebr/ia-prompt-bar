@@ -1,27 +1,322 @@
 body {
-  width: 280px;
-  font-family: Arial, sans-serif;
-  background: #f9f9f9;
-  padding: 10px;
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 0;
+  margin: 0;
+  color: #333;
+  min-height: 400px;
+  box-sizing: border-box;
+}
+
+.container {
+  background: #ffffff;
+  margin: 0;
+  padding: 20px;
+  border-radius: 0;
+  box-shadow: none;
+  min-height: 100vh;
+}
+
+.search-input {
+  width: 100%;
+  margin: 12px 0 16px;
+  padding: 10px 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+h1 {
+  color: #2c3e50;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 20px 0;
+  text-align: center;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 10px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 10px;
+}
+
+.header h1 {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin: 0;
+}
+
+.theme-toggle {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #f1f3f5;
+  border: 1px solid #e2e6ea;
+  cursor: pointer;
+  position: relative;
+}
+
+.theme-toggle::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  background: radial-gradient(circle at 60% 40%, #ffd43b 0 40%, transparent 41%),
+              radial-gradient(circle at 30% 70%, #fab005 0 35%, transparent 36%);
+  border-radius: 8px;
+}
+
+/* Tema escuro */
+.dark body {
+  background: #121212;
+}
+
+.dark .container {
+  background: #1c1c1e;
+}
+
+.dark h1, .dark .header h1 {
+  color: #e9ecef;
+  border-color: #2a2a2c;
+}
+
+.dark #prompt-list {
+  background: #161618;
+  border-color: #2a2a2c;
+}
+
+.dark .prompt-item {
+  background: #1f1f22;
+  border-color: #2a2a2c;
+}
+
+.dark input, .dark textarea {
+  background: #121214;
+  color: #e9ecef;
+  border-color: #2a2a2c;
+}
+
+.dark .search-input { background:#121214; color:#e9ecef; border-color:#2a2a2c; }
+.dark .btn-secondary { background:#2a2a2c; color:#e9ecef; }
+
+#prompt-list {
+  max-height: 240px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  background: #f8f9fa;
+  padding: 6px;
 }
 
 #prompt-list .item, .prompt-item {
-  display: flex;
-  justify-content: space-between;
-  background: #eee;
-  padding: 4px;
-  margin-bottom: 4px;
-  border-radius: 3px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 12px;
+  background: #ffffff;
+  padding: 12px;
+  margin: 8px;
+  border-radius: 10px;
+  border: 1px solid #e9ecef;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
+
+#prompt-list .item:hover, .prompt-item:hover {
+  background: #f1f3f4;
+  border-color: #667eea;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+}
+
+.prompt-title {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 14px;
+  flex: 1;
+  margin-right: 10px;
+}
+
+.prompt-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.prompt-preview {
+  margin-top: 4px;
+  color: #6c757d;
+  font-size: 12px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+  max-height: 3.2em;
+}
+
+.prompt-actions {
+  display: flex;
+  gap: 8px;
+  align-self: center;
+}
+
+/* Botões menores e alinhados dentro dos cards */
+.prompt-item .prompt-actions button {
+  padding: 6px 10px;
+  font-size: 12px;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-transform: none;
+  border-radius: 8px;
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn__icon svg { display: block; }
+.btn__label { line-height: 1; }
+
+.btn-copy {
+  background: linear-gradient(135deg, #4f8bf9 0%, #6c63ff 100%);
+}
+
 input, textarea {
   width: 100%;
-  margin: 4px 0;
+  margin: 8px 0;
+  padding: 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
 }
+
+.actions-row {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-secondary {
+  background: #f1f3f5;
+  color: #2c3e50;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: 'Consolas', 'Monaco', monospace;
+}
+
 button {
-  background: #32b85c;
-  color: #fff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
   border: none;
-  border-radius: 2px;
-  padding: 6px 10px;
+  border-radius: 6px;
+  padding: 10px 16px;
   cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+.btn-inject {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  padding: 6px 10px;
+  font-size: 12px;
+  margin-right: 5px;
+}
+
+.btn-delete {
+  background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+/* Responsivo: em larguras muito estreitas, empilha ações abaixo do conteúdo */
+@media (max-width: 380px) {
+  #prompt-list .item, .prompt-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .prompt-actions {
+    justify-content: flex-start;
+    align-self: start;
+  }
+}
+
+.message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  z-index: 1000;
+  animation: slideIn 0.3s ease;
+}
+
+.message.success {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+.message.error {
+  background: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Scrollbar personalizada */
+#prompt-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+#prompt-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+#prompt-list::-webkit-scrollbar-thumb {
+  background: #667eea;
+  border-radius: 3px;
+}
+
+#prompt-list::-webkit-scrollbar-thumb:hover {
+  background: #5a6fd8;
 }
