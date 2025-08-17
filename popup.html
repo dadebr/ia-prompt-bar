@@ -6,11 +6,34 @@
   <link rel="stylesheet" href="styles/popup.css" />
 </head>
 <body>
-  <h2>Meus Prompts</h2>
-  <div id="prompt-list"></div>
-  <input type="text" id="prompt-title" placeholder="Título do Prompt" />
-  <textarea id="prompt-text" placeholder="Digite seu prompt"></textarea>
-  <button id="save-prompt">Salvar Prompt</button>
+  <div class="container">
+    <div class="header">
+      <h1>Meus Prompts</h1>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema" title="Alternar tema"></button>
+    </div>
+    <input type="text" id="search-prompts" class="search-input" placeholder="Buscar por título..." aria-label="Buscar prompts" />
+    <div class="tools-row">
+      <select id="sort-prompts" class="sort-select" aria-label="Ordenar">
+        <option value="recent" selected>Mais recentes</option>
+        <option value="title">Título A–Z</option>
+      </select>
+      <div class="tools-actions">
+        <button id="export-prompts" class="btn-secondary" title="Exportar JSON">Exportar</button>
+        <button id="import-prompts" class="btn-secondary" title="Importar JSON">Importar</button>
+        <input id="import-file" type="file" accept="application/json" style="display:none" />
+      </div>
+    </div>
+    <div id="prompt-list"></div>
+    <div class="input-section">
+      <input type="text" id="prompt-title" placeholder="Título do Prompt" maxlength="100" />
+      <textarea id="prompt-text" placeholder="Digite seu prompt aqui..." maxlength="5000"></textarea>
+      <div class="actions-row">
+        <button id="save-prompt">Salvar Prompt</button>
+        <button id="cancel-edit" class="btn-secondary" style="display:none">Cancelar</button>
+      </div>
+    </div>
+    <div id="notification" class="notification hidden"></div>
+  </div>
   <script src="popup.js"></script>
 </body>
 </html>
