@@ -1,0 +1,27 @@
+body {
+  width: 280px;
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+  padding: 10px;
+}
+
+#prompt-list .item, .prompt-item {
+  display: flex;
+  justify-content: space-between;
+  background: #eee;
+  padding: 4px;
+  margin-bottom: 4px;
+  border-radius: 3px;
+}
+input, textarea {
+  width: 100%;
+  margin: 4px 0;
+}
+button {
+  background: #32b85c;
+  color: #fff;
+  border: none;
+  border-radius: 2px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
