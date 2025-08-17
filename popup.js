@@ -1,373 +1,236 @@
-// popup.js - Lógica da interface popup da extensão IA Prompt Bar
+// popup.js - IA Prompt Bar Extension
+// Implementa funcionalidades de renderização, salvamento e injeção de prompts
 
-// Elementos da interface
-let prompts = [];
-let categories = new Set(['Geral']);
-
-// Inicialização quando o popup é carregado
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('IA Prompt Bar: Popup carregado');
-  
-  // Carrega dados salvos no storage local
-  loadPromptsFromStorage();
-  
-  // Configura os event listeners
-  setupEventListeners();
-  
-  // Renderiza a interface inicial
-  renderInterface();
-});
+  // Elementos do DOM
+  const promptList = document.getElementById('prompt-list');
+  const promptTitle = document.getElementById('prompt-title');
+  const promptText = document.getElementById('prompt-text');
+  const saveButton = document.getElementById('save-prompt');
 
-// Configuração dos event listeners
-function setupEventListeners() {
-  // Botão para adicionar novo prompt
-  const addButton = document.getElementById('add-prompt-btn');
-  if (addButton) {
-    addButton.addEventListener('click', showAddPromptForm);
-  }
-  
-  // Botão para salvar prompt
-  const saveButton = document.getElementById('save-prompt-btn');
-  if (saveButton) {
-    saveButton.addEventListener('click', saveNewPrompt);
-  }
-  
-  // Botão para cancelar adição
-  const cancelButton = document.getElementById('cancel-prompt-btn');
-  if (cancelButton) {
-    cancelButton.addEventListener('click', hideAddPromptForm);
-  }
-  
-  // Campo de busca
-  const searchInput = document.getElementById('search-input');
-  if (searchInput) {
-    searchInput.addEventListener('input', filterPrompts);
-  }
-  
-  // Filtro de categoria
-  const categorySelect = document.getElementById('category-filter');
-  if (categorySelect) {
-    categorySelect.addEventListener('change', filterPrompts);
-  }
-}
+  // Carrega e exibe prompts salvos ao inicializar
+  loadPrompts();
 
-// Carrega prompts do storage local do Chrome
-function loadPromptsFromStorage() {
-  chrome.storage.local.get(['promptBarData'], function(result) {
-    if (result.promptBarData) {
-      prompts = result.promptBarData.prompts || [];
-      categories = new Set(result.promptBarData.categories || ['Geral']);
+  // Event listener para salvar prompts
+  saveButton.addEventListener('click', savePrompt);
+
+  // Função para carregar prompts do storage
+  function loadPrompts() {
+    chrome.storage.local.get(['prompts'], function(result) {
+      const prompts = result.prompts || [];
+      renderPrompts(prompts);
+    });
+  }
+
+  // Função para renderizar a lista de prompts
+  function renderPrompts(prompts) {
+    promptList.innerHTML = '';
+    
+    prompts.forEach((prompt, index) => {
+      const promptItem = document.createElement('div');
+      promptItem.className = 'prompt-item';
+      
+      promptItem.innerHTML = `
+        <div class="prompt-header">
+          <h3 class="prompt-title">${escapeHtml(prompt.title)}</h3>
+          <div class="prompt-actions">
+            <button class="inject-btn" data-index="${index}" title="Injetar prompt">📋</button>
+            <button class="delete-btn" data-index="${index}" title="Excluir prompt">🗑️</button>
+          </div>
+        </div>
+        <p class="prompt-content">${escapeHtml(prompt.text)}</p>
+      `;
+      
+      promptList.appendChild(promptItem);
+    });
+
+    // Adiciona event listeners para os botões
+    document.querySelectorAll('.inject-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const index = parseInt(this.dataset.index);
+        injectPrompt(prompts[index]);
+      });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const index = parseInt(this.dataset.index);
+        deletePrompt(index);
+      });
+    });
+  }
+
+  // Função para salvar um novo prompt
+  function savePrompt() {
+    const title = promptTitle.value.trim();
+    const text = promptText.value.trim();
+    
+    if (!title || !text) {
+      alert('Por favor, preencha o título e o texto do prompt.');
+      return;
     }
-    renderInterface();
-  });
-}
 
-// Salva prompts no storage local
-function savePromptsToStorage() {
-  const data = {
-    prompts: prompts,
-    categories: Array.from(categories)
-  };
-  
-  chrome.storage.local.set({ promptBarData: data }, function() {
-    console.log('Prompts salvos no storage local');
-  });
-}
-
-// Renderiza a interface principal
-function renderInterface() {
-  renderPromptsList();
-  renderCategoryFilter();
-  updateStats();
-}
-
-// Renderiza a lista de prompts
-function renderPromptsList() {
-  const promptsList = document.getElementById('prompts-list');
-  if (!promptsList) return;
-  
-  promptsList.innerHTML = '';
-  
-  if (prompts.length === 0) {
-    promptsList.innerHTML = '<div class="empty-state">Nenhum prompt salvo ainda. Clique em "Adicionar Prompt" para começar.</div>';
-    return;
+    chrome.storage.local.get(['prompts'], function(result) {
+      const prompts = result.prompts || [];
+      
+      const newPrompt = {
+        id: Date.now(),
+        title: title,
+        text: text,
+        createdAt: new Date().toISOString()
+      };
+      
+      prompts.push(newPrompt);
+      
+      chrome.storage.local.set({ prompts: prompts }, function() {
+        // Limpa os campos
+        promptTitle.value = '';
+        promptText.value = '';
+        
+        // Recarrega a lista
+        loadPrompts();
+        
+        // Feedback visual
+        showMessage('Prompt salvo com sucesso!');
+      });
+    });
   }
-  
-  prompts.forEach((prompt, index) => {
-    const promptElement = createPromptElement(prompt, index);
-    promptsList.appendChild(promptElement);
-  });
-}
 
-// Cria elemento HTML para um prompt
-function createPromptElement(prompt, index) {
-  const div = document.createElement('div');
-  div.className = 'prompt-item';
-  div.innerHTML = `
-    <div class="prompt-header">
-      <h3 class="prompt-title">${escapeHtml(prompt.title)}</h3>
-      <span class="prompt-category">${escapeHtml(prompt.category || 'Geral')}</span>
-    </div>
-    <div class="prompt-content">${escapeHtml(prompt.content).substring(0, 100)}${prompt.content.length > 100 ? '...' : ''}</div>
-    <div class="prompt-actions">
-      <button class="btn-use" data-index="${index}">Usar</button>
-      <button class="btn-edit" data-index="${index}">Editar</button>
-      <button class="btn-delete" data-index="${index}">Excluir</button>
-    </div>
-  `;
-  
-  // Adiciona event listeners para os botões
-  div.querySelector('.btn-use').addEventListener('click', () => usePrompt(index));
-  div.querySelector('.btn-edit').addEventListener('click', () => editPrompt(index));
-  div.querySelector('.btn-delete').addEventListener('click', () => deletePrompt(index));
-  
-  return div;
-}
-
-// Renderiza o filtro de categorias
-function renderCategoryFilter() {
-  const categorySelect = document.getElementById('category-filter');
-  if (!categorySelect) return;
-  
-  categorySelect.innerHTML = '<option value="">Todas as categorias</option>';
-  
-  categories.forEach(category => {
-    const option = document.createElement('option');
-    option.value = category;
-    option.textContent = category;
-    categorySelect.appendChild(option);
-  });
-}
-
-// Mostra o formulário de adicionar prompt
-function showAddPromptForm() {
-  const form = document.getElementById('add-prompt-form');
-  const overlay = document.getElementById('form-overlay');
-  
-  if (form && overlay) {
-    form.style.display = 'block';
-    overlay.style.display = 'block';
-    
-    // Limpa os campos
-    document.getElementById('prompt-title').value = '';
-    document.getElementById('prompt-content').value = '';
-    document.getElementById('prompt-category').value = 'Geral';
-    
-    // Foca no campo título
-    document.getElementById('prompt-title').focus();
-  }
-}
-
-// Esconde o formulário de adicionar prompt
-function hideAddPromptForm() {
-  const form = document.getElementById('add-prompt-form');
-  const overlay = document.getElementById('form-overlay');
-  
-  if (form && overlay) {
-    form.style.display = 'none';
-    overlay.style.display = 'none';
-  }
-}
-
-// Salva novo prompt
-function saveNewPrompt() {
-  const title = document.getElementById('prompt-title').value.trim();
-  const content = document.getElementById('prompt-content').value.trim();
-  const category = document.getElementById('prompt-category').value.trim() || 'Geral';
-  
-  // Validação
-  if (!title || !content) {
-    alert('Por favor, preencha o título e o conteúdo do prompt.');
-    return;
-  }
-  
-  // Cria novo prompt
-  const newPrompt = {
-    id: Date.now().toString(),
-    title: title,
-    content: content,
-    category: category,
-    createdAt: new Date().toISOString(),
-    usageCount: 0
-  };
-  
-  // Adiciona à lista
-  prompts.push(newPrompt);
-  categories.add(category);
-  
-  // Salva no storage
-  savePromptsToStorage();
-  
-  // Atualiza interface
-  renderInterface();
-  
-  // Esconde formulário
-  hideAddPromptForm();
-  
-  console.log('Novo prompt salvo:', newPrompt);
-}
-
-// Usa um prompt (injeta no campo de chat)
-function usePrompt(index) {
-  const prompt = prompts[index];
-  if (!prompt) return;
-  
-  // Incrementa contador de uso
-  prompt.usageCount = (prompt.usageCount || 0) + 1;
-  prompt.lastUsed = new Date().toISOString();
-  
-  // Salva no storage
-  savePromptsToStorage();
-  
-  // Envia mensagem para o content script injetar o texto
-  chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, {
-      action: 'injectPrompt',
-      text: prompt.content
-    }, function(response) {
-      if (chrome.runtime.lastError) {
-        console.log('Erro ao injetar prompt:', chrome.runtime.lastError.message);
-        // Fallback: copia para clipboard
-        copyToClipboard(prompt.content);
-        showNotification('Prompt copiado para a área de transferência!');
-      } else {
-        console.log('Prompt injetado com sucesso');
-        showNotification('Prompt inserido no campo de chat!');
+  // Função para injetar prompt na página ativa
+  function injectPrompt(prompt) {
+    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+      if (tabs[0]) {
+        chrome.scripting.executeScript({
+          target: { tabId: tabs[0].id },
+          function: injectTextIntoPage,
+          args: [prompt.text]
+        }, function() {
+          if (chrome.runtime.lastError) {
+            console.error('Erro ao injetar prompt:', chrome.runtime.lastError);
+            showMessage('Erro ao injetar prompt. Verifique as permissões.', 'error');
+          } else {
+            showMessage('Prompt injetado com sucesso!');
+            window.close(); // Fecha o popup após injetar
+          }
+        });
       }
     });
-  });
-}
-
-// Edita um prompt
-function editPrompt(index) {
-  const prompt = prompts[index];
-  if (!prompt) return;
-  
-  // Preenche o formulário com os dados do prompt
-  document.getElementById('prompt-title').value = prompt.title;
-  document.getElementById('prompt-content').value = prompt.content;
-  document.getElementById('prompt-category').value = prompt.category;
-  
-  // Modifica o comportamento do botão salvar para edição
-  const saveButton = document.getElementById('save-prompt-btn');
-  saveButton.textContent = 'Atualizar';
-  saveButton.onclick = () => updatePrompt(index);
-  
-  showAddPromptForm();
-}
-
-// Atualiza um prompt existente
-function updatePrompt(index) {
-  const title = document.getElementById('prompt-title').value.trim();
-  const content = document.getElementById('prompt-content').value.trim();
-  const category = document.getElementById('prompt-category').value.trim() || 'Geral';
-  
-  if (!title || !content) {
-    alert('Por favor, preencha o título e o conteúdo do prompt.');
-    return;
   }
-  
-  // Atualiza o prompt
-  prompts[index].title = title;
-  prompts[index].content = content;
-  prompts[index].category = category;
-  prompts[index].updatedAt = new Date().toISOString();
-  
-  categories.add(category);
-  
-  // Salva no storage
-  savePromptsToStorage();
-  
-  // Atualiza interface
-  renderInterface();
-  
-  // Restaura botão salvar
-  const saveButton = document.getElementById('save-prompt-btn');
-  saveButton.textContent = 'Salvar';
-  saveButton.onclick = saveNewPrompt;
-  
-  // Esconde formulário
-  hideAddPromptForm();
-}
 
-// Exclui um prompt
-function deletePrompt(index) {
-  const prompt = prompts[index];
-  if (!prompt) return;
-  
-  if (confirm(`Tem certeza que deseja excluir o prompt "${prompt.title}"?`)) {
-    prompts.splice(index, 1);
-    savePromptsToStorage();
-    renderInterface();
-    console.log('Prompt excluído:', prompt);
-  }
-}
-
-// Filtra prompts por busca e categoria
-function filterPrompts() {
-  const searchTerm = document.getElementById('search-input').value.toLowerCase();
-  const selectedCategory = document.getElementById('category-filter').value;
-  
-  const promptItems = document.querySelectorAll('.prompt-item');
-  
-  prompts.forEach((prompt, index) => {
-    const matchesSearch = !searchTerm || 
-      prompt.title.toLowerCase().includes(searchTerm) ||
-      prompt.content.toLowerCase().includes(searchTerm);
-    
-    const matchesCategory = !selectedCategory || prompt.category === selectedCategory;
-    
-    const shouldShow = matchesSearch && matchesCategory;
-    
-    if (promptItems[index]) {
-      promptItems[index].style.display = shouldShow ? 'block' : 'none';
+  // Função para excluir um prompt
+  function deletePrompt(index) {
+    if (confirm('Tem certeza que deseja excluir este prompt?')) {
+      chrome.storage.local.get(['prompts'], function(result) {
+        const prompts = result.prompts || [];
+        prompts.splice(index, 1);
+        
+        chrome.storage.local.set({ prompts: prompts }, function() {
+          loadPrompts();
+          showMessage('Prompt excluído com sucesso!');
+        });
+      });
     }
-  });
-}
-
-// Copia texto para clipboard
-function copyToClipboard(text) {
-  navigator.clipboard.writeText(text).catch(err => {
-    console.error('Erro ao copiar para clipboard:', err);
-    // Fallback método antigo
-    const textArea = document.createElement('textarea');
-    textArea.value = text;
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textArea);
-  });
-}
-
-// Mostra notificação temporária
-function showNotification(message) {
-  const notification = document.createElement('div');
-  notification.className = 'notification';
-  notification.textContent = message;
-  
-  document.body.appendChild(notification);
-  
-  setTimeout(() => {
-    notification.remove();
-  }, 3000);
-}
-
-// Atualiza estatísticas
-function updateStats() {
-  const statsElement = document.getElementById('stats');
-  if (statsElement) {
-    const totalPrompts = prompts.length;
-    const totalCategories = categories.size;
-    statsElement.textContent = `${totalPrompts} prompts em ${totalCategories} categorias`;
   }
-}
 
-// Função utilitária para escapar HTML
-function escapeHtml(unsafe) {
-  return unsafe
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+  // Função para escapar HTML (segurança)
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // Função para exibir mensagens de feedback
+  function showMessage(message, type = 'success') {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${type}`;
+    messageDiv.textContent = message;
+    messageDiv.style.cssText = `
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      padding: 10px 15px;
+      border-radius: 4px;
+      color: white;
+      font-weight: bold;
+      z-index: 1000;
+      background-color: ${type === 'error' ? '#e74c3c' : '#27ae60'};
+    `;
+    
+    document.body.appendChild(messageDiv);
+    
+    setTimeout(() => {
+      messageDiv.remove();
+    }, 3000);
+  }
+});
+
+// Função que será injetada na página para inserir o texto
+// Esta função executa no contexto da página web
+function injectTextIntoPage(text) {
+  // Procura por campos de texto comuns onde inserir o prompt
+  const selectors = [
+    'textarea[placeholder*="prompt"]',
+    'textarea[placeholder*="message"]',
+    'textarea[placeholder*="chat"]',
+    'input[type="text"][placeholder*="prompt"]',
+    'input[type="text"][placeholder*="message"]',
+    'div[contenteditable="true"]',
+    'textarea:focus',
+    'input[type="text"]:focus',
+    'textarea',
+    'input[type="text"]'
+  ];
+  
+  let targetElement = null;
+  
+  // Tenta encontrar um elemento focado primeiro
+  const activeElement = document.activeElement;
+  if (activeElement && 
+      (activeElement.tagName === 'TEXTAREA' || 
+       (activeElement.tagName === 'INPUT' && activeElement.type === 'text') ||
+       activeElement.contentEditable === 'true')) {
+    targetElement = activeElement;
+  }
+  
+  // Se não encontrou elemento focado, procura pelos seletores
+  if (!targetElement) {
+    for (const selector of selectors) {
+      const element = document.querySelector(selector);
+      if (element && element.offsetParent !== null) { // Elemento visível
+        targetElement = element;
+        break;
+      }
+    }
+  }
+  
+  if (targetElement) {
+    // Foca no elemento
+    targetElement.focus();
+    
+    // Insere o texto
+    if (targetElement.contentEditable === 'true') {
+      // Para elementos contenteditable
+      targetElement.textContent = text;
+      
+      // Dispara eventos para notificar frameworks como React/Vue
+      targetElement.dispatchEvent(new Event('input', { bubbles: true }));
+      targetElement.dispatchEvent(new Event('change', { bubbles: true }));
+    } else {
+      // Para input e textarea
+      targetElement.value = text;
+      
+      // Dispara eventos
+      targetElement.dispatchEvent(new Event('input', { bubbles: true }));
+      targetElement.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    
+    // Move o cursor para o final
+    if (targetElement.setSelectionRange) {
+      targetElement.setSelectionRange(text.length, text.length);
+    }
+    
+    return true; // Sucesso
+  }
+  
+  return false; // Não encontrou elemento apropriado
 }
