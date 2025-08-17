@@ -1,92 +1,92 @@
-# IA Prompt Bar
+# AI Prompt Bar
 
-Extensão Chrome que abre uma barra lateral para salvar e injetar prompts automaticamente em interfaces de chat de IA.
+Chrome extension that opens a sidebar to save and inject prompts automatically into AI chat interfaces.
 
-## Descrição
+## Description
 
-A IA Prompt Bar é uma extensão para Google Chrome que permite aos usuários:
+AI Prompt Bar is a Google Chrome extension that allows users to:
 
-- Salvar prompts frequentemente utilizados
-- Injetar prompts rapidamente em interfaces de chat de IA
-- Organizar prompts em categorias
-- Acessar prompts através de uma barra lateral conveniente
-- Editar prompts existentes inline
-- Buscar e filtrar prompts por título
-- Exportar e importar prompts em formato JSON
-- Alternar entre tema claro e escuro
+- Save frequently used prompts
+- Inject prompts quickly into AI chat interfaces
+- Organize prompts into categories
+- Access prompts through a convenient sidebar
+- Edit existing prompts inline
+- Search and filter prompts by title
+- Export and import prompts in JSON format
+- Switch between light and dark themes
 
-## Recursos
+## Features
 
-- 🚀 Injeção rápida de prompts
-- 📁 Organização por categorias
-- 🔍 Busca rápida de prompts
-- ✏️ Edição inline de prompts
-- 📊 Ordenação por data/título
-- 💾 Exportar/importar JSON
-- 🌙 Tema escuro/claro
-- 💾 Salvamento local dos dados
-- 🎨 Interface intuitiva e responsiva
-- 🤖 Suporte a ChatGPT, Gemini, Claude e outros
+- 🚀 Fast prompt injection
+- 📁 Organization by categories
+- 🔍 Quick prompt search
+- ✏️ Inline prompt editing
+- 📊 Sort by date/title
+- 💾 Export/import JSON
+- 🌙 Dark/light theme
+- 💾 Local data storage
+- 🎨 Intuitive and responsive interface
+- 🤖 Support for ChatGPT, Gemini, Claude and others
 
-## Instalação
+## Installation
 
-1. Clone este repositório:
+1. Clone this repository:
    ```bash
    git clone https://github.com/dadebr/ia-prompt-bar.git
    ```
 
-2. Abra o Chrome e acesse `chrome://extensions/`
+2. Open Chrome and go to `chrome://extensions/`
 
-3. Ative o "Modo do desenvolvedor" no canto superior direito
+3. Enable "Developer mode" in the top right corner
 
-4. Clique em "Carregar extensão sem pacote" e selecione a pasta do projeto
+4. Click "Load unpacked extension" and select the project folder
 
-## Como Usar
+## How to Use
 
-### Adicionando Prompts
+### Adding Prompts
 
-1. Clique no ícone da extensão na barra de ferramentas do Chrome
-2. Digite o título e o conteúdo do prompt
-3. Clique em "Salvar Prompt"
+1. Click on the extension icon in Chrome's toolbar
+2. Enter the title and content of the prompt
+3. Click "Save Prompt"
 
-### Usando Prompts
+### Using Prompts
 
-1. Abra qualquer interface de chat de IA (ChatGPT, Claude, etc.)
-2. Clique no ícone da extensão para abrir a barra lateral
-3. Navegue pelos prompts salvos ou use a busca
-4. Clique em "Injetar" para inserir o prompt no campo de texto
+1. Open any AI chat interface (ChatGPT, Claude, etc.)
+2. Click on the extension icon to open the sidebar
+3. Browse through saved prompts or use search
+4. Click "Inject" to insert the prompt into the text field
 
-### Editando Prompts
+### Editing Prompts
 
-1. Clique no botão "Editar" em qualquer prompt
-2. Modifique o título ou conteúdo
-3. Clique em "Atualizar" para salvar as mudanças
-4. Use "Cancelar" para descartar as alterações
+1. Click the "Edit" button on any prompt
+2. Modify the title or content
+3. Click "Update" to save changes
+4. Use "Cancel" to discard changes
 
-### Organizando Prompts
+### Organizing Prompts
 
-- Use a busca para encontrar rapidamente prompts específicos
-- Ordene por "Mais recentes" ou "Título A-Z"
-- Exporte seus prompts para backup
-- Importe prompts de outros usuários ou backups
+- Use search to quickly find specific prompts
+- Sort by "Most recent" or "Title A-Z"
+- Export your prompts for backup
+- Import prompts from other users or backups
 
-## Desenvolvimento
+## Development
 
-### Estrutura do Projeto
+### Project Structure
 
 ```
 ia-prompt-bar/
-├── manifest.json          # Manifesto da extensão
-├── popup.html             # Interface principal
-├── popup.js               # Lógica da popup
-├── content.js             # Script de conteúdo
-├── background.js          # Script de background
-├── deploy.sh              # Script de deploy
+├── manifest.json          # Extension manifest
+├── popup.html             # Main interface
+├── popup.js               # Popup logic
+├── content.js             # Content script
+├── background.js          # Background script
+├── deploy.sh              # Deploy script
 └── styles/
-    └── popup.css          # Estilos da interface
+    └── popup.css          # Interface styles
 ```
 
-### Tecnologias Utilizadas
+### Technologies Used
 
 - HTML5
 - CSS3
@@ -95,38 +95,37 @@ ia-prompt-bar/
 
 ## Deploy
 
-Para fazer deploy das mudanças:
+To deploy changes:
 
 ```bash
-# Dar permissão de execução ao script
+# Give execution permission to the script
 chmod +x deploy.sh
 
-# Executar o deploy
+# Run the deploy
 ./deploy.sh
 ```
 
-O script irá:
-- Verificar se o Git está configurado
-- Adicionar todos os arquivos modificados
-- Fazer commit com mensagem descritiva
-- Fazer push para o repositório GitHub
+The script will:
 
-## Contribuição
+- Check if Git is configured
+- Add all modified files
+- Commit with descriptive message
+- Push to GitHub repository
 
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/NovaFeature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
-4. Push para a branch (`git push origin feature/NovaFeature`)
-5. Abra um Pull Request
+## Contributing
 
-## Licença
+1. Fork the project
+2. Create a branch for your feature (`git checkout -b feature/NewFeature`)
+3. Commit your changes (`git commit -m 'Add new feature'`)
+4. Push to the branch (`git push origin feature/NewFeature`)
+5. Open a Pull Request
 
-Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
+## License
 
-## Contato
+This project is under the MIT license. See the LICENSE file for more details.
 
-Se você tiver alguma dúvida ou sugestão, sinta-se à vontade para abrir uma issue neste repositório.
+## Contact
 
----
+If you have any questions or suggestions, feel free to open an issue in this repository.
 
-**Desenvolvido com ❤️ para facilitar o uso de IAs**
+Developed with ❤️ to facilitate AI usage
