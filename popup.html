@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA Prompt Bar</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>IA Prompt Bar</h1>
+            <button id="toggleSidebar" class="toggle-btn">📝</button>
+        </header>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Buscar prompts..." class="search-input">
+        </div>
+        
+        <div class="categories">
+            <select id="categoryFilter" class="category-select">
+                <option value="all">Todas as categorias</option>
+                <option value="geral">Geral</option>
+                <option value="programacao">Programação</option>
+                <option value="escrita">Escrita</option>
+                <option value="analise">Análise</option>
+                <option value="criativo">Criativo</option>
+            </select>
+        </div>
+        
+        <div class="prompts-container" id="promptsContainer">
+            <!-- Prompts serão inseridos aqui dinamicamente -->
+        </div>
+        
+        <div class="actions">
+            <button id="addPromptBtn" class="action-btn primary">+ Adicionar Prompt</button>
+            <button id="exportBtn" class="action-btn secondary">Exportar</button>
+            <button id="importBtn" class="action-btn secondary">Importar</button>
+        </div>
+    </div>
+    
+    <!-- Modal para adicionar/editar prompt -->
+    <div id="promptModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Adicionar Prompt</h2>
+                <button id="closeModal" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="promptTitle">Título:</label>
+                    <input type="text" id="promptTitle" class="form-input" placeholder="Ex: Revisor de texto">
+                </div>
+                <div class="form-group">
+                    <label for="promptCategory">Categoria:</label>
+                    <select id="promptCategory" class="form-select">
+                        <option value="geral">Geral</option>
+                        <option value="programacao">Programação</option>
+                        <option value="escrita">Escrita</option>
+                        <option value="analise">Análise</option>
+                        <option value="criativo">Criativo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="promptContent">Conteúdo:</label>
+                    <textarea id="promptContent" class="form-textarea" rows="6" placeholder="Digite seu prompt aqui..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="promptFavorite"> Marcar como favorito
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelBtn" class="modal-btn secondary">Cancelar</button>
+                <button id="saveBtn" class="modal-btn primary">Salvar</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>
